@@ -72,7 +72,7 @@ public class TestDB extends AndroidTestCase {
         validateCursor(feedItemCursor, feedItemValue);
     }
 
-
+    // A method that is used to check if the Cursor contains the values from the ContentValues object.
     static void validateCursor(Cursor valueCursor, ContentValues expectedValues) {
 
         // Assert that there is at least 1 result in the cursor

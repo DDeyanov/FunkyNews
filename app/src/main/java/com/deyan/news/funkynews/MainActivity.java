@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.deyan.news.funkynews.parser.AsyncParser;
+
 public class MainActivity extends ActionBarActivity {
 
     @Override
@@ -12,8 +14,8 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Parser parser = new Parser();
-        parser.execute();
+        AsyncParser asyncParser = new AsyncParser();
+        asyncParser.execute("http://gizmodo.com/rss");
     }
 
 
