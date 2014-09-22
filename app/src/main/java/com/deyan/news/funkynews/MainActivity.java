@@ -1,21 +1,21 @@
 package com.deyan.news.funkynews;
 
-import android.support.v7.app.ActionBarActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.deyan.news.funkynews.parser.AsyncParser;
+public class MainActivity extends ActionBarActivity implements FeedListFragment.OnFeedSelectedListener {
 
-public class MainActivity extends ActionBarActivity {
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        AsyncParser asyncParser = new AsyncParser();
-        asyncParser.execute("http://gizmodo.com/rss");
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_main);
     }
 
 
@@ -36,5 +36,22 @@ public class MainActivity extends ActionBarActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * This method comes from the OnFeedSelectedInterface and is used when the user select a feed
+     * from FeedListFragment.
+     *
+     * @param url - The url of the feed that is selected
+     * @param feedId  - The id of the feed that is selected
+     */
+    @Override
+    public void onItemSelected(String url, long feedId) {
+
+        Intent intent = new Intent(this, FeedItemsActivity.class);
+        intent.putExtra(FeedItemsActivity.FeedUrl, url).putExtra(FeedItemsActivity.FeedId, feedId);
+
+        startActivity(intent);
+
     }
 }

@@ -21,11 +21,12 @@ public class FunkyNewsContract {
 
     public static final class FeedItemEntry implements BaseColumns {
 
-        public static final String TABLE_NAME = "item";
+        public static final String TABLE_NAME = "feed_items";
 
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_LINK = "link";
         public static final String COLUMN_DESCRIPTION = "description";
         public static final String COLUMN_DATE = "date";
+        public static final String COLUMN_FOREIGN_KEY = "feed_id";
     }
 }
