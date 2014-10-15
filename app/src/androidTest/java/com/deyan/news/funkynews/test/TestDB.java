@@ -30,6 +30,7 @@ public class TestDB extends AndroidTestCase {
         assertEquals(true, db.isOpen());
     }
 
+
     // A test that is checking whether new entries can be inserted into the database and then
     // extracted successfully.
     public void testInsertReadDb() {
@@ -52,15 +53,15 @@ public class TestDB extends AndroidTestCase {
         feedItemValue.put(FeedItemEntry.COLUMN_DESCRIPTION, "<span>I started watching the music video of </span><em>Give It Up</em><span>—the fourth track of Kutiman's first album </span>" +
                 "<a href=\"http://thru-you-too.com\" target=\"_blank\">Thru You Too</a>" +
                 "<span>—with skepticism. After all, how good can a song be if it's made from samples taken from random, unconnected YouTube music clips? Well, apparently, it can be amazingly good. Just watch and listen.</span>");
-        feedItemValue.put(FeedItemEntry.COLUMN_DATE, "2014-09-15");
+        feedItemValue.put(FeedItemEntry.COLUMN_DATE, "15/09/2014 15:30:00");
+        feedItemValue.put(FeedItemEntry.COLUMN_FOREIGN_KEY, 1);
 
         long newFeedItemRowId = db.insert(FeedItemEntry.TABLE_NAME, null, feedItemValue);
 
         // Verify that the row was inserted
         assertTrue(newFeedItemRowId != -1);
 
-        // The data is inserted into the database, now check if it can be pulled.
-
+        // The data is inserted into the database, now check if it can be pulled back.
         Cursor feedCursor = db.query(FeedEntry.TABLE_NAME,
                 null, null, null, null, null, null);
 
@@ -70,7 +71,10 @@ public class TestDB extends AndroidTestCase {
                 null, null, null, null, null, null);
 
         validateCursor(feedItemCursor, feedItemValue);
+
+        db.close();
     }
+
 
     // A method that is used to check if the Cursor contains the values from the ContentValues object.
     static void validateCursor(Cursor valueCursor, ContentValues expectedValues) {

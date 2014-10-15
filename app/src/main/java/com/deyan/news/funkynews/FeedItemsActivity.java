@@ -26,8 +26,8 @@ public class FeedItemsActivity extends ActionBarActivity {
         Long feedId = getIntent().getLongExtra(FeedId, 0);
 
         // On a phone this activity will hold a fragment, containing all the feed items from a
-        // given feed. On a tablet this activity wont be used and the FeedItemsFragment will be
-        // placed in the main activity.
+        // given feed channel. On a tablet this activity will not be used and the FeedItemsFragment
+        // will be placed in the main activity.
         FeedItemsFragment fragment = FeedItemsFragment.newInstance(feedUrl, feedId.toString());
 
         getSupportFragmentManager().beginTransaction()

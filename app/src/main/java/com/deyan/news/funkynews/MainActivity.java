@@ -6,6 +6,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.deyan.news.funkynews.data.FunkyNewsDbHelper;
+
 public class MainActivity extends ActionBarActivity implements FeedListFragment.OnFeedSelectedListener {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
@@ -16,6 +18,8 @@ public class MainActivity extends ActionBarActivity implements FeedListFragment.
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+        this.deleteDatabase(FunkyNewsDbHelper.DATABASE_NAME);
     }
 
 
@@ -48,6 +52,8 @@ public class MainActivity extends ActionBarActivity implements FeedListFragment.
     @Override
     public void onItemSelected(String url, long feedId) {
 
+        // TODO - When I have a layout for a tablet this method must be modified. On a tablet it
+        // should just add the FeedItemsFragment to this activity without starting a new one.
         Intent intent = new Intent(this, FeedItemsActivity.class);
         intent.putExtra(FeedItemsActivity.FeedUrl, url).putExtra(FeedItemsActivity.FeedId, feedId);
 

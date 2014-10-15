@@ -22,8 +22,13 @@ import com.deyan.news.funkynews.data.FunkyNewsDbHelper;
  */
 public class FeedListFragment extends Fragment {
 
+    private static final String LOG_TAG = FeedListFragment.class.getSimpleName();
+
+    // In onAttach I'm assigning a MainActivity object to this variable. After that it will be
+    // used for communication with FeedItemsFragment (the communication will pass trough MainActivity).
     private OnFeedSelectedListener activityCallback;
     private Cursor cursorForFeeds;
+
 
     @Override
     public void onAttach(Activity activity) {
@@ -37,6 +42,20 @@ public class FeedListFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // The cursor is initialized here because the fragment will not be destroyed when the
+        // activity is destroyed (for example on device rotation). Because of that the onCreate
+        // method will be called just one time -> I have to make only one database query.
+
+        // TODO Since the getAllFeeds method requires database access it might be better to get
+        // feed channels in some AsyncTask.
+
+        cursorForFeeds = getAllFeeds(getActivity());
+    }
+
     // The method creates the view that is associated with this Fragment.
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -45,8 +64,7 @@ public class FeedListFragment extends Fragment {
 
         final ListView listView = (ListView) rootView.findViewById(R.id.listView_feeds);
 
-        cursorForFeeds = getAllFeeds();
-
+        // Populate the list with the feed channels that have been extracted from the database
         final ListAdapter adapter = new SimpleCursorAdapter(
                 getActivity(),
                 R.layout.list_feeds,
@@ -65,6 +83,10 @@ public class FeedListFragment extends Fragment {
 
                 if (cursorForFeeds != null && cursorForFeeds.moveToPosition(position)) {
 
+                    // When an item in the list is clicked, tell MainActivity which of the
+                    // feed channels has been selected. Then MainActivity will tell the other
+                    // activity/fragment to open the feed items from the selected feed channel.
+
                     String url = cursorForFeeds.getString(cursorForFeeds.getColumnIndex(FeedEntry.COLUMN_FEED_URL));
                     long feedId = cursorForFeeds.getLong(cursorForFeeds.getColumnIndex(FeedEntry._ID));
 
@@ -73,13 +95,15 @@ public class FeedListFragment extends Fragment {
             }
         });
 
+        setRetainInstance(true);
+
         return rootView;
     }
 
 
-    private Cursor getAllFeeds() {
+    public static Cursor getAllFeeds(Activity activity) {
 
-        SQLiteDatabase db = new FunkyNewsDbHelper(getActivity()).getReadableDatabase();
+        SQLiteDatabase db = new FunkyNewsDbHelper(activity).getReadableDatabase();
 
         Cursor cursor = db.query(FeedEntry.TABLE_NAME,
                 null, null, null, null, null, null);

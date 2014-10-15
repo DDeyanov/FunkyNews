@@ -4,8 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
-import android.util.Log;
-import android.widget.ListView;
 
 import com.deyan.news.funkynews.FeedItemsFragment;
 import com.deyan.news.funkynews.data.FunkyNewsContract.FeedItemEntry;
@@ -20,18 +18,20 @@ public class AsyncFeedItemsLoader extends AsyncTask<String, Void, Cursor> {
 
     private Context mContext;
     private FeedItemsFragment mFragment;
-    private ListView mListView;
 
-    public AsyncFeedItemsLoader(Context context, FeedItemsFragment fragment, ListView listView) {
+    public AsyncFeedItemsLoader(Context context, FeedItemsFragment fragment) {
         mContext = context;
         mFragment = fragment;
-        mListView = listView;
     }
 
+    /**
+     *
+     * @param strings  strings array contains only 1 value which is the id of the feed that the user
+     *                 have selected.
+     * @return
+     */
     @Override
     protected Cursor doInBackground(String... strings) {
-
-        Log.i("AsyncFeed", "ID: " + strings[0]);
 
         SQLiteDatabase db = new FunkyNewsDbHelper(mContext).getReadableDatabase();
 
@@ -44,9 +44,7 @@ public class AsyncFeedItemsLoader extends AsyncTask<String, Void, Cursor> {
                         FeedItemEntry.COLUMN_LINK},
                 " feed_id = ?",
                 new String[] {strings[0]},
-                null, null, null);
-
-        Log.i("AsyncFeed", "Items in cursor: " + cursor.getCount());
+                null, null, FeedItemEntry.COLUMN_DATE + " ASC");
 
         return cursor;
     }
@@ -55,7 +53,7 @@ public class AsyncFeedItemsLoader extends AsyncTask<String, Void, Cursor> {
     @Override
     protected void onPostExecute(Cursor cursor) {
 
-        mFragment.setAdapterToList(mListView, cursor);
+        mFragment.setCursor(cursor);
 
     }
 }
