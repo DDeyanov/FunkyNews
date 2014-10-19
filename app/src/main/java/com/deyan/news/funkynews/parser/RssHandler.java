@@ -50,8 +50,8 @@ public class RssHandler extends DefaultHandler {
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
 
-        // The "if" is executed when the information about the feed is being parsed. The "else if" is
-        // executed when information about the separate items in the feed is being parsed.
+        // The "if" is executed when the information about the feed channel is being parsed.
+        // The "else if" is executed when information about the separate feed items is being parsed.
         if (feed != null && item == null) {
 
             if (qName.equals("title")) {

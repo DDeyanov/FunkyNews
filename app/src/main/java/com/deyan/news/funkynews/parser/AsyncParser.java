@@ -14,6 +14,7 @@ import org.xml.sax.SAXException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Date;
 
 /**
  * Created by Deyan on 08/09/2014.
@@ -52,7 +53,15 @@ public class AsyncParser extends AsyncTask<String, Void, Void> {
                 statement.bindString(2, item.getTitle());
                 statement.bindString(3, item.getLink());
                 statement.bindString(4, item.getDescription());
-                statement.bindString(5, FunkyNewsContract.getDateStringForDB(item.getDate()));
+
+                // Some feed channels do not provide a pubDate element for the items. In that
+                // case the current date and time will be used.
+                if (item.getDate() == null) {
+                    statement.bindString(5, FunkyNewsContract.getDateStringForDB(new Date()));
+                } else {
+                    statement.bindString(5, FunkyNewsContract.getDateStringForDB(item.getDate()));
+                }
+
                 statement.bindLong(6, feedId);
                 statement.execute();
             }

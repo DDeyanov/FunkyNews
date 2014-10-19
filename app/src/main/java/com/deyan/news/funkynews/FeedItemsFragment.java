@@ -1,5 +1,6 @@
 package com.deyan.news.funkynews;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,29 +8,34 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 import com.deyan.news.funkynews.data.AsyncFeedItemsLoader;
 import com.deyan.news.funkynews.data.FunkyNewsContract;
-import com.deyan.news.funkynews.data.SimpleHtmlCursorAdapter;
 import com.deyan.news.funkynews.parser.AsyncParser;
-
 
 public class FeedItemsFragment extends Fragment {
 
     private static final String LOG_TAG = FeedItemsFragment.class.getSimpleName();
 
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    // the fragment initialization parameters
     private static final String FEED_URL = "FEED_URL";
     private static final String FEED_ID = "FEED_ID";
 
     private String feedUrl;
     private String feedId;
 
-    private Cursor cursorForFeedItems;
+    private ListView mListView;
 
-    private ListView rootListView;
+    // I'm assigning a value to this variable when the result from the AsyncFeedItemsLoader task
+    // is received. It is then user the re-set the adapter for the list in onCreateView() every
+    // time when a device configuration change occurs.
+    private ListAdapter feedItemsAdapter;
 
     /**
      * Use this factory method to create a new instance of
@@ -40,8 +46,6 @@ public class FeedItemsFragment extends Fragment {
      * @return A new instance of fragment FeedItemsFragment.
      */
     public static FeedItemsFragment newInstance(String url, String id) {
-
-        Log.i(LOG_TAG, "Into newInstance()");
 
         FeedItemsFragment fragment = new FeedItemsFragment();
         Bundle args = new Bundle();
@@ -73,8 +77,6 @@ public class FeedItemsFragment extends Fragment {
         AsyncParser parser = new AsyncParser(getActivity());
         parser.execute(feedUrl, feedId);
 
-        Log.i(LOG_TAG, "inside onCreate");
-
         AsyncFeedItemsLoader asyncLoader = new AsyncFeedItemsLoader(getActivity(), this);
         asyncLoader.execute(feedId);
     }
@@ -84,39 +86,60 @@ public class FeedItemsFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        rootListView = (ListView) inflater.inflate(R.layout.fragment_feed_items, container, false);
+        LinearLayout rootLayout =
+                (LinearLayout) inflater.inflate(R.layout.fragment_feed_items, container, false);
+
+        mListView = (ListView) rootLayout.findViewById(R.id.list_of_feed_items);
+
+        // When the user click on a title the DetailFeedItemActivity is opened with the
+        // description for this feed item.
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                TextView title = (TextView) view.findViewById(R.id.feed_item_title);
+
+                Intent intent = new Intent(getActivity(), DetailFeedItemActivity.class);
+                intent.putExtra(DetailFeedItemActivity.FEED_ITEM_TITLE, title.getText());
+
+                startActivity(intent);
+            }
+        });
+
+        // On device rotation (or any other configuration change) the fragment will be retained, but
+        // that method will be called again. Because of that, the adapter that is being set the first
+        // time when the fragment is created must be set again here. If it is not set, the results
+        // from the database will not appear on screen.
+        if (feedItemsAdapter != null) {
+            mListView.setAdapter(feedItemsAdapter);
+        }
 
         // Indicate that the fragment instance must be retained across activity recreation.
         // onDestroy() and onCreate() will not be called, but onDetach() and onAttach() will
         // be called.
         setRetainInstance(true);
 
-        return rootListView;
+        return rootLayout;
     }
 
 
-    public void setCursor(Cursor cursor) {
+    public void setCursor(Cursor resultCursor) {
 
-        Log.i(LOG_TAG, "Setting cursor to local cursor");
-
-        cursorForFeedItems = cursor;
-
-        ListAdapter adapter = new SimpleHtmlCursorAdapter(
+        ListAdapter adapter = new SimpleCursorAdapter(
                 getActivity(),
                 R.layout.list_feed_items,
-                cursorForFeedItems,
-                new String [] {FunkyNewsContract.FeedItemEntry.COLUMN_TITLE, FunkyNewsContract.FeedItemEntry.COLUMN_DESCRIPTION,
-                        FunkyNewsContract.FeedItemEntry.COLUMN_DATE, FunkyNewsContract.FeedItemEntry.COLUMN_LINK},
-                new int[] {R.id.feed_item_title, R.id.feed_item_description,
-                        R.id.feed_item_date, R.id.feed_item_link},
+                resultCursor,
+                new String [] {FunkyNewsContract.FeedItemEntry.COLUMN_TITLE},
+                new int[] {R.id.feed_item_title},
                 0
         );
 
-        if (rootListView == null) {
-            Log.i(LOG_TAG, "ListView is null");
+        feedItemsAdapter = adapter;
+
+        if (mListView == null) {
+            Log.i(LOG_TAG, "ListView (The root view) is null");
         } else {
-            Log.i(LOG_TAG, "ListView is not null");
-            rootListView.setAdapter(adapter);
+            mListView.setAdapter(adapter);
         }
     }
 }
