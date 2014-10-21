@@ -1,8 +1,8 @@
 package com.deyan.news.funkynews;
 
+import android.app.Activity;
+import android.app.FragmentManager;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -11,7 +11,7 @@ import android.view.MenuItem;
  * channel. On a tablet this activity will not be used and the FeedItemsFragment will be placed in
  * the main activity, next to FeedListFragment.
  */
-public class FeedItemsActivity extends ActionBarActivity {
+public class FeedItemsActivity extends Activity {
 
     private static final String LOG_TAG = FeedItemsActivity.class.getSimpleName();
 
@@ -27,12 +27,12 @@ public class FeedItemsActivity extends ActionBarActivity {
         setContentView(R.layout.activity_feed_items);
 
         // This provides the Up navigation for the activity.
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
 
         String feedUrl = getIntent().getStringExtra(FeedUrl);
         Long feedId = getIntent().getLongExtra(FeedId, 0);
 
-        FragmentManager manager = getSupportFragmentManager();
+        FragmentManager manager = getFragmentManager();
         FeedItemsFragment fragment = (FeedItemsFragment) manager.findFragmentByTag(FRAGMENT_TAG);
 
         // Only one fragment will be created -> the first time when this activity is launched.

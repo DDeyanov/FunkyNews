@@ -1,14 +1,14 @@
 package com.deyan.news.funkynews;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.deyan.news.funkynews.data.FunkyNewsDbHelper;
 
-public class MainActivity extends ActionBarActivity implements FeedListFragment.OnFeedSelectedListener {
+public class MainActivity extends Activity implements FeedListFragment.OnFeedSelectedListener {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
@@ -19,6 +19,9 @@ public class MainActivity extends ActionBarActivity implements FeedListFragment.
 
         setContentView(R.layout.activity_main);
 
+        // The database is deleted on each application run. This will be removed when the development
+        // process is near the end. For now it allows me to keep only the most recent feeds in the
+        // database and not storing huge amount of data.
         this.deleteDatabase(FunkyNewsDbHelper.DATABASE_NAME);
     }
 

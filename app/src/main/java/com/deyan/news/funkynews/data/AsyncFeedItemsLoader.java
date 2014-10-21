@@ -26,8 +26,8 @@ public class AsyncFeedItemsLoader extends AsyncTask<String, Void, Cursor> {
 
     /**
      *
-     * @param strings  strings array contains only 1 value which is the id of the feed that the user
-     *                 have selected.
+     * @param strings  strings array contains only 1 value which is the id of the feed channel
+     *                 that the user have selected.
      * @return
      */
     @Override
@@ -40,7 +40,7 @@ public class AsyncFeedItemsLoader extends AsyncTask<String, Void, Cursor> {
                 new String[] {
                         FeedItemEntry._ID,
                         FeedItemEntry.COLUMN_TITLE},
-                " feed_id = ?",
+                " feed_id = ? AND for_deletion = 0",
                 new String[] {strings[0]},
                 null, null, FeedItemEntry.COLUMN_DATE + " ASC");
 

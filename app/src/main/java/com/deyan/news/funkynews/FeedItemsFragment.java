@@ -1,23 +1,24 @@
 package com.deyan.news.funkynews;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
+import com.deyan.news.funkynews.CustomAdapter.CustomCursorAdapter;
 import com.deyan.news.funkynews.data.AsyncFeedItemsLoader;
-import com.deyan.news.funkynews.data.FunkyNewsContract;
+import com.deyan.news.funkynews.data.AsyncFeedItemsUpdater;
 import com.deyan.news.funkynews.parser.AsyncParser;
+
+import java.util.ArrayList;
 
 public class FeedItemsFragment extends Fragment {
 
@@ -31,11 +32,19 @@ public class FeedItemsFragment extends Fragment {
     private String feedId;
 
     private ListView mListView;
+    private Button deleteMarkedButton;
+    private Button markAllButton;
+
+    // Control whether all the rows must be checked or unchecked.
+    // true -> checked    false ->unchecked
+    private boolean checkedAll = true;
 
     // I'm assigning a value to this variable when the result from the AsyncFeedItemsLoader task
     // is received. It is then user the re-set the adapter for the list in onCreateView() every
     // time when a device configuration change occurs.
-    private ListAdapter feedItemsAdapter;
+    private CustomCursorAdapter feedItemsAdapter;
+
+    private FeedItemsFragment currentFragment;
 
     /**
      * Use this factory method to create a new instance of
@@ -79,6 +88,8 @@ public class FeedItemsFragment extends Fragment {
 
         AsyncFeedItemsLoader asyncLoader = new AsyncFeedItemsLoader(getActivity(), this);
         asyncLoader.execute(feedId);
+
+        currentFragment = this;
     }
 
     @Override
@@ -90,6 +101,8 @@ public class FeedItemsFragment extends Fragment {
                 (LinearLayout) inflater.inflate(R.layout.fragment_feed_items, container, false);
 
         mListView = (ListView) rootLayout.findViewById(R.id.list_of_feed_items);
+        deleteMarkedButton = (Button) rootLayout.findViewById(R.id.button_delete_marked);
+        markAllButton = (Button) rootLayout.findViewById(R.id.button_mark_all);
 
         // When the user click on a title the DetailFeedItemActivity is opened with the
         // description for this feed item.
@@ -103,6 +116,35 @@ public class FeedItemsFragment extends Fragment {
                 intent.putExtra(DetailFeedItemActivity.FEED_ITEM_TITLE, title.getText());
 
                 startActivity(intent);
+            }
+        });
+
+        deleteMarkedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ArrayList<String> forDeletion = feedItemsAdapter.getMarkedTitles();
+                String[] arr = new String[forDeletion.size()];
+                forDeletion.toArray(arr);
+
+                AsyncFeedItemsUpdater task = new AsyncFeedItemsUpdater(getActivity(), currentFragment);
+                task.execute(arr);
+            }
+        });
+
+        markAllButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                feedItemsAdapter.setCheckAll(checkedAll);
+
+                checkedAll = !checkedAll;
+
+                // Correct the label of the button to reflect the checked/unchecked state of the
+                // checkboxes
+                if (!checkedAll) {
+                    markAllButton.setText(R.string.button_unmark_all);
+                } else {
+                    markAllButton.setText(R.string.button_mark_all);
+                }
             }
         });
 
@@ -125,21 +167,25 @@ public class FeedItemsFragment extends Fragment {
 
     public void setCursor(Cursor resultCursor) {
 
-        ListAdapter adapter = new SimpleCursorAdapter(
-                getActivity(),
-                R.layout.list_feed_items,
-                resultCursor,
-                new String [] {FunkyNewsContract.FeedItemEntry.COLUMN_TITLE},
-                new int[] {R.id.feed_item_title},
-                0
-        );
-
-        feedItemsAdapter = adapter;
-
-        if (mListView == null) {
-            Log.i(LOG_TAG, "ListView (The root view) is null");
+        // When the list of feed items is loaded for the first time a new Adapter is instantiated.
+        // If an item is deleted the list is updated by just swapping the old cursor with a new one.
+        if (feedItemsAdapter == null) {
+            feedItemsAdapter = new CustomCursorAdapter(getActivity(), resultCursor, 0);
+            mListView.setAdapter(feedItemsAdapter);
         } else {
-            mListView.setAdapter(adapter);
+            feedItemsAdapter.swapCursor(resultCursor);
+            feedItemsAdapter.notifyDataSetChanged();
         }
     }
+
+    /**
+     * When an update is done (item(s) have been deleted) this method is called from the AsyncTask.
+     * It triggers new query which results in a new Cursor. Then that new Cursor is used in the
+     * setCursor() method to display the updated ListView.
+     */
+    public void reloadCursor() {
+        AsyncFeedItemsLoader asyncLoader = new AsyncFeedItemsLoader(getActivity(), this);
+        asyncLoader.execute(feedId);
+    }
+
 }

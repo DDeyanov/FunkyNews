@@ -14,11 +14,13 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/button_delete_marked"
             android:text="@string/button_delete_marked"/>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/button_mark_all"
             android:text="@string/button_mark_all"/>
     </LinearLayout>
 

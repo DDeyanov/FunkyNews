@@ -41,7 +41,7 @@ public class AsyncParser extends AsyncTask<String, Void, Void> {
             long feedId = Long.parseLong(params[1]);
 
             String sqlInsertStatement = "INSERT INTO " + FeedItemEntry.TABLE_NAME +
-                    " VALUES (?, ?, ?, ?, ?, ?);";
+                    " VALUES (?, ?, ?, ?, ?, ?, ?);";
             SQLiteStatement statement = db.compileStatement(sqlInsertStatement);
 
             db.beginTransaction();
@@ -63,6 +63,7 @@ public class AsyncParser extends AsyncTask<String, Void, Void> {
                 }
 
                 statement.bindLong(6, feedId);
+                statement.bindLong(7, 0);
                 statement.execute();
             }
 

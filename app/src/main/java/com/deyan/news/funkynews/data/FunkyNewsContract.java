@@ -36,6 +36,7 @@ public class FunkyNewsContract {
         public static final String COLUMN_DESCRIPTION = "description";
         public static final String COLUMN_DATE = "date";
         public static final String COLUMN_FOREIGN_KEY = "feed_id";
+        public static final String COLUMN_FOR_DELETION_FLAG = "for_deletion";
     }
 
 
