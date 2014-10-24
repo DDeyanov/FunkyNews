@@ -34,6 +34,17 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.deyan.news.funkynews.MainActivity" />
         </activity>
+
+        <receiver
+            android:name="com.deyan.news.funkynews.broadcastReceivers.AlarmReceiver"
+            android:enabled="true"
+            android:exported="false" >
+        </receiver>
+
+        <service
+            android:name="com.deyan.news.funkynews.services.ClearFeedItemsService"
+            android:exported="false" >
+        </service>
     </application>
 
 </manifest>

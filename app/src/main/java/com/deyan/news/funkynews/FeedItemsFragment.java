@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.deyan.news.funkynews.CustomAdapter.CustomCursorAdapter;
+import com.deyan.news.funkynews.customAdapter.CustomCursorAdapter;
 import com.deyan.news.funkynews.data.AsyncFeedItemsLoader;
 import com.deyan.news.funkynews.data.AsyncFeedItemsUpdater;
 import com.deyan.news.funkynews.parser.AsyncParser;
