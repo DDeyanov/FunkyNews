@@ -35,7 +35,7 @@ public class AsyncFeedItemsLoader extends AsyncTask<String, Void, Cursor> {
 
         SQLiteDatabase db = new FunkyNewsDbHelper(mContext).getReadableDatabase();
 
-        // Get a Cursor with all the titles from a given feed channel sorted by date in ascending order0
+        // Get a Cursor with all the titles from a given feed channel sorted by date in ascending order
         Cursor cursor = db.query(FeedItemEntry.TABLE_NAME,
                 new String[] {
                         FeedItemEntry._ID,

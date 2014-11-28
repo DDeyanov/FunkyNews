@@ -55,6 +55,7 @@ public class TestDB extends AndroidTestCase {
                 "<span>—with skepticism. After all, how good can a song be if it's made from samples taken from random, unconnected YouTube music clips? Well, apparently, it can be amazingly good. Just watch and listen.</span>");
         feedItemValue.put(FeedItemEntry.COLUMN_DATE, "15/09/2014 15:30:00");
         feedItemValue.put(FeedItemEntry.COLUMN_FOREIGN_KEY, 1);
+        feedItemValue.put(FeedItemEntry.COLUMN_FOR_DELETION_FLAG, 0);
 
         long newFeedItemRowId = db.insert(FeedItemEntry.TABLE_NAME, null, feedItemValue);
 

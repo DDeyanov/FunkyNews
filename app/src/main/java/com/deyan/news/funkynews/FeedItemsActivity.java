@@ -45,7 +45,6 @@ public class FeedItemsActivity extends Activity {
             manager.beginTransaction()
                 .add(R.id.feed_items_list_container, fragment, FRAGMENT_TAG)
                 .commit();
-
         }
     }
 

@@ -49,11 +49,7 @@ public class FeedListFragment extends Fragment {
         // The cursor is initialized here because the fragment will not be destroyed when the
         // activity is destroyed (for example on device rotation). Because of that the onCreate
         // method will be called just one time -> I have to make only one database query.
-
-        // TODO Since the getAllFeeds method requires database access it might be better to get
-        // feed channels in some AsyncTask.
-
-        cursorForFeeds = getAllFeeds(getActivity());
+        cursorForFeeds = getAllFeedChannels(getActivity());
     }
 
     // The method creates the view that is associated with this Fragment.
@@ -95,13 +91,14 @@ public class FeedListFragment extends Fragment {
             }
         });
 
+        // The fragment will be retained even the hosting activity is destroyed
         setRetainInstance(true);
 
         return rootView;
     }
 
 
-    public static Cursor getAllFeeds(Activity activity) {
+    public static Cursor getAllFeedChannels(Activity activity) {
 
         SQLiteDatabase db = new FunkyNewsDbHelper(activity).getReadableDatabase();
 

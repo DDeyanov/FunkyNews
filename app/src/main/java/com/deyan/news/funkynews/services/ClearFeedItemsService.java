@@ -14,9 +14,8 @@ import java.util.Calendar;
 
 
 /**
- * An {@link IntentService} subclass for handling asynchronous task requests in
- * a service on a separate handler thread. When the onHandleIntent method finishes its work,
- * the service stops itself.
+ * A class for handling asynchronous task requests in a service on a separate handler thread.
+ * When the onHandleIntent method finishes its work, the service stops itself.
  */
 public class ClearFeedItemsService extends IntentService {
 

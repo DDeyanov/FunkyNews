@@ -16,7 +16,6 @@ public class FullTestSuite extends TestSuite {
 
     public static Test suit() {
 
-        return new TestSuiteBuilder(FullTestSuite.class)
-                .includeAllPackagesUnderHere().build();
+        return new TestSuiteBuilder(FullTestSuite.class).includeAllPackagesUnderHere().build();
     }
 }

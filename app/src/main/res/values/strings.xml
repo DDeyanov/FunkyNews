@@ -12,4 +12,8 @@
     <string name="button_mark_all">Mark All</string>
     <string name="button_unmark_all">Unmark All</string>
 
+    <!-- Account type (for sync-adapter authenticator)-->
+    <!-- SyncAdapter related -->
+    <string name="sync_account_type">funkynews.deyan.com</string>
+
 </resources>

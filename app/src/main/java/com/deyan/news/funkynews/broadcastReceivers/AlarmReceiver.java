@@ -18,6 +18,5 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         Intent startServiceIntent = new Intent(context, ClearFeedItemsService.class);
         context.startService(startServiceIntent);
-
     }
 }

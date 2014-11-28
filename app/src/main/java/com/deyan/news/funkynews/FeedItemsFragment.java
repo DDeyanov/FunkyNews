@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.deyan.news.funkynews.customAdapter.CustomCursorAdapter;
 import com.deyan.news.funkynews.data.AsyncFeedItemsLoader;
 import com.deyan.news.funkynews.data.AsyncFeedItemsUpdater;
-import com.deyan.news.funkynews.parser.AsyncParser;
 
 import java.util.ArrayList;
 
@@ -28,8 +27,8 @@ public class FeedItemsFragment extends Fragment {
     private static final String FEED_URL = "FEED_URL";
     private static final String FEED_ID = "FEED_ID";
 
-    private String feedUrl;
-    private String feedId;
+    private String feedChannelUrl;
+    private String feedChannelId;
 
     private ListView mListView;
     private Button deleteMarkedButton;
@@ -76,18 +75,13 @@ public class FeedItemsFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            feedUrl = getArguments().getString(FEED_URL);
-            feedId = getArguments().getString(FEED_ID);
+            feedChannelUrl = getArguments().getString(FEED_URL);
+            feedChannelId = getArguments().getString(FEED_ID);
         }
 
-        // Get all feed items from the selected feed channel and if some of the items are not in
-        // the database -> insert them
-        //TODO - A SyncAdapter must be used instead AsyncParser
-        AsyncParser parser = new AsyncParser(getActivity());
-        parser.execute(feedUrl, feedId);
-
+        // Get all feed items from the selected feed channel
         AsyncFeedItemsLoader asyncLoader = new AsyncFeedItemsLoader(getActivity(), this);
-        asyncLoader.execute(feedId);
+        asyncLoader.execute(feedChannelId);
 
         currentFragment = this;
     }
@@ -185,7 +179,7 @@ public class FeedItemsFragment extends Fragment {
      */
     public void reloadCursor() {
         AsyncFeedItemsLoader asyncLoader = new AsyncFeedItemsLoader(getActivity(), this);
-        asyncLoader.execute(feedId);
+        asyncLoader.execute(feedChannelId);
     }
 
 }
