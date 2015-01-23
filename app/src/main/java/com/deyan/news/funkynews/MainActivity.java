@@ -38,10 +38,10 @@ public class MainActivity extends Activity implements FeedListFragment.OnFeedSel
         pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
 
         // The alarm will fire after 10 seconds for the first time and after that it will fire again
-        // on 30 seconds intervals
+        // on half day intervals
         alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 SystemClock.elapsedRealtime() + (10 * 1000),
-                10 * 1000,
+                AlarmManager.INTERVAL_HALF_DAY,
                 pendingIntent);
     }
 

@@ -47,11 +47,11 @@ public class FunkyNewsSyncAdapter extends AbstractThreadedSyncAdapter {
     // The account name
     public static final String ACCOUNT = "dummyaccount";
 
-    // The amount of time in seconds that elapses between periodic syncs.
-    public static final int SYNC_INTERVAL = 60;
+    // The amount of time in seconds that elapses between periodic syncs. (5 hours)
+    public static final int SYNC_INTERVAL = 5 * 60 * 60;
     // The amount of flex time in seconds before SYNC_INTERVAL that is permitted for the sync to take place.
-    // Must be less than pollFrequency.
-    public static final int SYNC_FLEXTIME = 0; //SYNC_INTERVAL / 3;
+    // Must be less than pollFrequency (SYNC_INTERVAL).
+    public static final int SYNC_FLEXTIME = 30 * 60;  // 30 minutes
 
 
     public FunkyNewsSyncAdapter(Context context, boolean autoInitialize) {
@@ -92,9 +92,6 @@ public class FunkyNewsSyncAdapter extends AbstractThreadedSyncAdapter {
 
                 URL url = new URL(feedChannelURL);
                 RssFeed rssFeed = RssReader.read(url);
-
-                Log.i(LOG_TAG, "Inserting " + rssFeed.getRssItems().size() + " feed entries " +
-                        "associated with feedChannelId: " + feedChannelId);
 
                 String sqlInsertStatement = "INSERT INTO " + FunkyNewsContract.FeedItemEntry.TABLE_NAME +
                         " VALUES (?, ?, ?, ?, ?, ?, ?);";
