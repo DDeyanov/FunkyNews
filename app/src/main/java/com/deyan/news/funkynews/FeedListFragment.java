@@ -24,7 +24,7 @@ public class FeedListFragment extends Fragment {
 
     private static final String LOG_TAG = FeedListFragment.class.getSimpleName();
 
-    // In onAttach I'm assigning a MainActivity object to this variable. After that it will be
+    // In onAttach I'm assigning a MainActivity object to this variable. Then it will be
     // used for communication with FeedItemsFragment (the communication will pass trough MainActivity).
     private OnFeedSelectedListener activityCallback;
     private Cursor cursorForFeeds;
@@ -91,7 +91,7 @@ public class FeedListFragment extends Fragment {
             }
         });
 
-        // The fragment will be retained even the hosting activity is destroyed
+        // The fragment will be retained even if the hosting activity is destroyed
         setRetainInstance(true);
 
         return rootView;

@@ -42,7 +42,19 @@ public class DetailFeedItemActivity extends Activity {
         if (cursor.moveToNext()) {
             titleView.setText(title);
 
-            descriptionView.setText(Html.fromHtml(cursor.getString(cursor.getColumnIndex(FeedItemEntry.COLUMN_DESCRIPTION))));
+            String description = cursor.getString(cursor.getColumnIndex(FeedItemEntry.COLUMN_DESCRIPTION));
+
+            // If there is a picture in the description - it is removed.
+            int indx1 = description.indexOf("<img");
+            StringBuilder builder = new StringBuilder(description);
+
+            if (indx1 != -1) {
+                int indx2 = description.indexOf("/>", indx1);
+
+                builder.delete(indx1, indx2 + 2);
+            }
+
+            descriptionView.setText(Html.fromHtml(builder.toString()));
             descriptionView.setMovementMethod(LinkMovementMethod.getInstance());
 
             dateView.setText(cursor.getString(cursor.getColumnIndex(FeedItemEntry.COLUMN_DATE)));
