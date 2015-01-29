@@ -8,15 +8,32 @@
     <!--The descendantFocusability attribute is required because without it the items in the
         ListView are not responding to click events-->
 
-
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:id="@+id/feed_item_title"
-        android:textAppearance="?android:textAppearanceMedium"
-        android:paddingBottom="10dp"
-        android:paddingTop="10dp"/>
+        android:orientation="vertical"
+        android:layout_gravity="center">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/feed_item_title"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:text="Title"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/feed_item_date"
+            android:textAppearance="?android:textAppearanceSmall"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:text="2012/06/19 Hours:Minutes"/>
+
+    </LinearLayout>
 
     <CheckBox
         android:layout_width="match_parent"

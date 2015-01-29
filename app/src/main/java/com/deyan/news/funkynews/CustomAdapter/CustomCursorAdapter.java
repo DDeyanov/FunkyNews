@@ -17,8 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class will be used as an adapter for the ListView in FeedItemsFragment. Since the feed
- * items contain HTML tags, the setViewText method is overridden to reflect this.
+ * This class will be used as an adapter for the ListView in FeedItemsFragment.
  *
  * Created by Deyan on 22/09/2014.
  */
@@ -83,9 +82,11 @@ public class CustomCursorAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
 
         final TextView title = (TextView) view.findViewById(R.id.feed_item_title);
+        final TextView date  = (TextView) view.findViewById(R.id.feed_item_date);
         final CheckBox checkBox = (CheckBox) view.findViewById(R.id.feed_item_checkbox);
 
         title.setText(cursor.getString(cursor.getColumnIndex(FunkyNewsContract.FeedItemEntry.COLUMN_TITLE)));
+        date.setText(cursor.getString(cursor.getColumnIndex(FunkyNewsContract.FeedItemEntry.COLUMN_DATE)));
 
         if (checkAll == true) {
             checkBox.setChecked(true);

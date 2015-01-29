@@ -15,7 +15,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:id="@+id/detail_feed_item_title"
-        android:textSize="24dp"
+        android:textAppearance="?android:textAppearanceMedium"
         android:text="Title"/>
 
     <TextView
@@ -23,6 +23,7 @@
         android:layout_height="0dp"
         android:layout_weight="3"
         android:id="@+id/detail_feed_item_description"
+        android:gravity="center"
         android:text="DESCRIPTION"/>
 
     <TextView
@@ -30,6 +31,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:id="@+id/detail_feed_item_date"
+        android:gravity="center"
         android:text="2012/06/19 Hours:Minutes"/>
 
 </LinearLayout>
