@@ -2,10 +2,13 @@ package com.deyan.news.funkynews.sync;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SyncRequest;
 import android.content.SyncResult;
 import android.database.Cursor;
@@ -13,8 +16,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
+import com.deyan.news.funkynews.MainActivity;
+import com.deyan.news.funkynews.R;
 import com.deyan.news.funkynews.data.FunkyNewsContract;
 import com.deyan.news.funkynews.data.FunkyNewsDbHelper;
 import com.deyan.news.funkynews.parser.RssFeed;
@@ -26,7 +33,9 @@ import org.xml.sax.SAXException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * This class handles the transfer of data between a server and an app, using the Android
@@ -52,6 +61,8 @@ public class FunkyNewsSyncAdapter extends AbstractThreadedSyncAdapter {
     // The amount of flex time in seconds before SYNC_INTERVAL that is permitted for the sync to take place.
     // Must be less than pollFrequency (SYNC_INTERVAL).
     public static final int SYNC_FLEXTIME = 30 * 60;  // 30 minutes
+
+    public static final int notificationID = 1;
 
 
     public FunkyNewsSyncAdapter(Context context, boolean autoInitialize) {
@@ -81,12 +92,21 @@ public class FunkyNewsSyncAdapter extends AbstractThreadedSyncAdapter {
                 FunkyNewsContract.FeedEntry.TABLE_NAME,
                 new String[] {
                         FunkyNewsContract.FeedEntry._ID,
+                        FunkyNewsContract.FeedEntry.COLUMN_FEED_NAME,
                         FunkyNewsContract.FeedEntry.COLUMN_FEED_URL},
                 null, null, null, null, null);
 
+        // This list will contain the names of all the feed channels from which there are new feeds.
+        // It will then be used to generate a notification.
+        List<String> feedChannelsWithNewFeeds = new ArrayList<String>(10);
+
         while (cursor.moveToNext()) {
             long feedChannelId = cursor.getLong(cursor.getColumnIndex(FunkyNewsContract.FeedEntry._ID));
+            String feedChannelName = cursor.getString(cursor.getColumnIndex(FunkyNewsContract.FeedEntry.COLUMN_FEED_NAME));
             String feedChannelURL = cursor.getString(cursor.getColumnIndex(FunkyNewsContract.FeedEntry.COLUMN_FEED_URL));
+
+            long inserted = -1;
+            int counter = 0;
 
             try {
 
@@ -117,11 +137,23 @@ public class FunkyNewsSyncAdapter extends AbstractThreadedSyncAdapter {
 
                     statement.bindLong(6, feedChannelId);
                     statement.bindLong(7, 0);
-                    statement.execute();
+                    inserted = statement.executeInsert();
+
+                    // If a new row is inserted -> add 1 to the counter
+                    if (inserted != -1) {
+                        counter++;
+                    }
+
+                    inserted = -1;
                 }
 
                 db.setTransactionSuccessful();
                 db.endTransaction();
+
+                if (counter > 0) {
+                    feedChannelsWithNewFeeds.add(feedChannelName);
+                }
+
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (SAXException e) {
@@ -132,6 +164,44 @@ public class FunkyNewsSyncAdapter extends AbstractThreadedSyncAdapter {
         }
         cursor.close();
         db.close();
+
+        // If the list is not empty, then there are new feed items from some of the feed channels
+        if (!feedChannelsWithNewFeeds.isEmpty()) {
+            StringBuilder builder = new StringBuilder();
+
+            for (String title : feedChannelsWithNewFeeds) {
+                builder.append(title + "  ");
+            }
+
+            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this.getContext())
+                    .setSmallIcon(R.drawable.ic_launcher)
+                    .setContentTitle("New feeds from:")
+                    .setContentText(builder.toString().trim());
+
+            mBuilder.setAutoCancel(true);
+
+            // Explicit intent
+            Intent intent = new Intent(this.getContext(), MainActivity.class);
+
+            // The stack builder object will contain an artificial back stack for the started Activity.
+            // This ensures that navigating backward from the Activity leads out of the application
+            // to the Home screen.
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(this.getContext());
+            // Adds the back stack for the Intent (but not the Intent itself)
+            stackBuilder.addParentStack(MainActivity.class);
+            // Adds the Intent that starts the Activity to the top of the stack
+            stackBuilder.addNextIntent(intent);
+
+            // Get a Pending intent containing the entire back stack
+            PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            mBuilder.setContentIntent(pendingIntent);
+
+            NotificationManager mNotificationManager =
+                    (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+
+            mNotificationManager.notify(notificationID, mBuilder.build());
+        }
     }
 
 
