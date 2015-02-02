@@ -28,12 +28,12 @@ public class ClearFeedItemsService extends IntentService {
 
         // This value must be negative so when it is added to the current date, it sets the range
         // as anything older than 2 minutes/hours/days.
-        int rangeInHours = -2;
+        int range = -2;
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
-        Calendar range = Calendar.getInstance();
-        range.add(Calendar.HOUR_OF_DAY, rangeInHours);
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, range);
 
         // Delete the feed items that have been marked for deletion
         SQLiteDatabase db = new FunkyNewsDbHelper(this).getWritableDatabase();
@@ -41,7 +41,7 @@ public class ClearFeedItemsService extends IntentService {
 
         int deletedRows = db.delete(
             FunkyNewsContract.FeedItemEntry.TABLE_NAME,
-            "date < '" + dateFormat.format(range.getTime()) + "' AND for_deletion = '1'",
+            "date < '" + dateFormat.format(calendar.getTime()) + "' AND for_deletion = '1'",
             null
         );
 
