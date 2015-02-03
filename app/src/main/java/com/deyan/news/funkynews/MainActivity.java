@@ -73,12 +73,14 @@ public class MainActivity extends Activity implements FeedListFragment.OnFeedSel
      * @param feedId  - The id of the feed that is selected
      */
     @Override
-    public void onItemSelected(String url, long feedId) {
+    public void onItemSelected(String url, long feedId, String title) {
 
         // TODO - When I have a layout for a tablet this method must be modified. On a tablet it
         // should add the FeedItemsFragment to this activity without starting a new one.
         Intent intent = new Intent(this, FeedItemsActivity.class);
-        intent.putExtra(FeedItemsActivity.FeedUrl, url).putExtra(FeedItemsActivity.FeedId, feedId);
+        intent.putExtra(FeedItemsActivity.FeedUrl, url)
+              .putExtra(FeedItemsActivity.FeedId, feedId)
+              .putExtra(FeedItemsActivity.FeedTitle, title);
 
         startActivity(intent);
     }

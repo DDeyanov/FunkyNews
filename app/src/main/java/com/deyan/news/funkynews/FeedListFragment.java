@@ -85,8 +85,9 @@ public class FeedListFragment extends Fragment {
 
                     String url = cursorForFeeds.getString(cursorForFeeds.getColumnIndex(FeedEntry.COLUMN_FEED_URL));
                     long feedId = cursorForFeeds.getLong(cursorForFeeds.getColumnIndex(FeedEntry._ID));
+                    String channelTitle = cursorForFeeds.getString(cursorForFeeds.getColumnIndex(FeedEntry.COLUMN_FEED_NAME));
 
-                    activityCallback.onItemSelected(url, feedId);
+                    activityCallback.onItemSelected(url, feedId, channelTitle);
                 }
             }
         });
@@ -115,7 +116,7 @@ public class FeedListFragment extends Fragment {
      */
     public interface OnFeedSelectedListener {
 
-        public void onItemSelected(String url, long feedId);
+        public void onItemSelected(String url, long feedId, String title);
     }
 
 }

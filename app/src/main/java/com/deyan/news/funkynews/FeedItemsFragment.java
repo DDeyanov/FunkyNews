@@ -26,10 +26,13 @@ public class FeedItemsFragment extends Fragment {
     // the fragment initialization parameters
     private static final String FEED_URL = "FEED_URL";
     private static final String FEED_ID = "FEED_ID";
+    private static final String FEED_TITLE = "FEED_TITLE";
 
     private String feedChannelUrl;
     private String feedChannelId;
+    private String feedChannelTitle;
 
+    private TextView channelTitle;
     private ListView mListView;
     private Button deleteMarkedButton;
     private Button markAllButton;
@@ -53,12 +56,13 @@ public class FeedItemsFragment extends Fragment {
      * @param id  The ID of this feed in the database
      * @return A new instance of fragment FeedItemsFragment.
      */
-    public static FeedItemsFragment newInstance(String url, String id) {
+    public static FeedItemsFragment newInstance(String url, String id, String title) {
 
         FeedItemsFragment fragment = new FeedItemsFragment();
         Bundle args = new Bundle();
         args.putString(FEED_URL, url);
         args.putString(FEED_ID, id);
+        args.putString(FEED_TITLE, title);
         fragment.setArguments(args);
 
         return fragment;
@@ -77,6 +81,7 @@ public class FeedItemsFragment extends Fragment {
         if (getArguments() != null) {
             feedChannelUrl = getArguments().getString(FEED_URL);
             feedChannelId = getArguments().getString(FEED_ID);
+            feedChannelTitle = getArguments().getString(FEED_TITLE);
         }
 
         // Get all feed items from the selected feed channel
@@ -93,6 +98,9 @@ public class FeedItemsFragment extends Fragment {
         // Inflate the layout for this fragment
         LinearLayout rootLayout =
                 (LinearLayout) inflater.inflate(R.layout.fragment_feed_items, container, false);
+
+        channelTitle = (TextView) rootLayout.findViewById(R.id.feed_item_title_for_list);
+        channelTitle.setText("News from: " + feedChannelTitle);
 
         mListView = (ListView) rootLayout.findViewById(R.id.list_of_feed_items);
         deleteMarkedButton = (Button) rootLayout.findViewById(R.id.button_delete_marked);

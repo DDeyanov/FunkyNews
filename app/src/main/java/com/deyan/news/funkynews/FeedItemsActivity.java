@@ -19,6 +19,7 @@ public class FeedItemsActivity extends Activity {
 
     public static final String FeedUrl = "FeedUrl";
     public static final String FeedId = "FeedId";
+    public static final String FeedTitle = "FeedTitle";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +32,7 @@ public class FeedItemsActivity extends Activity {
 
         String feedUrl = getIntent().getStringExtra(FeedUrl);
         Long feedId = getIntent().getLongExtra(FeedId, 0);
+        String feedTitle = getIntent().getStringExtra(FeedTitle);
 
         FragmentManager manager = getFragmentManager();
         FeedItemsFragment fragment = (FeedItemsFragment) manager.findFragmentByTag(FRAGMENT_TAG);
@@ -40,7 +42,7 @@ public class FeedItemsActivity extends Activity {
         // if() won't be executed.
         if (fragment == null) {
 
-            fragment = FeedItemsFragment.newInstance(feedUrl, feedId.toString());
+            fragment = FeedItemsFragment.newInstance(feedUrl, feedId.toString(), feedTitle);
 
             manager.beginTransaction()
                 .add(R.id.feed_items_list_container, fragment, FRAGMENT_TAG)

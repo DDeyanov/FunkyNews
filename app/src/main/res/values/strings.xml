@@ -6,7 +6,9 @@
     <string name="action_settings">Settings</string>
 
     <string name="title_activity_feed_items">FeedItemsActivity</string>
+    <string name="label_activity_feed_items">News List</string>
     <string name="title_activity_detail_feed_item">DetailFeedItemActivity</string>
+    <string name="label_activity_detail_feed_item">Details</string>
 
     <string name="button_delete_marked">Delete Marked</string>
     <string name="button_mark_all">Mark All</string>

@@ -27,7 +27,7 @@
         </activity>
         <activity
             android:name="com.deyan.news.funkynews.FeedItemsActivity"
-            android:label="@string/title_activity_feed_items"
+            android:label="@string/label_activity_feed_items"
             android:parentActivityName="com.deyan.news.funkynews.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -35,7 +35,7 @@
         </activity>
         <activity
             android:name="com.deyan.news.funkynews.DetailFeedItemActivity"
-            android:label="@string/title_activity_detail_feed_item"
+            android:label="@string/label_activity_detail_feed_item"
             android:parentActivityName="com.deyan.news.funkynews.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
